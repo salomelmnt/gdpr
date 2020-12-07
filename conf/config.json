@@ -8,12 +8,12 @@
   "fields":
   [
     {
-      "name": "movie_name_123",
+      "name": "movie_name",
       "type": "String"
     },
     {
-      "name": "number_of_views_123",
-      "type": "Long"
+      "name": "number_of_views",
+      "type": "Integer"
     },
     {
       "name": "mark",

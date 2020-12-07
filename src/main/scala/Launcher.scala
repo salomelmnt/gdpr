@@ -19,7 +19,10 @@ object Launcher {
     val configuration = confReader.parseJson.convertTo[JsonConfig]
     val dfSchema: StructType = DataFrameSchema.buildDataframeSchema(configuration.fields)
     val data = DataFrameReader.readCsv("data.csv", configuration.csvOptions, dfSchema)
-    data.printSchema()
+    import org.apache.spark.sql.functions._
+    data.na.drop(Seq("movie_name")).show
+    val value = 543276
+    data.na.fill(value, Seq("number_of_views")).show
     data.show
 
   }
