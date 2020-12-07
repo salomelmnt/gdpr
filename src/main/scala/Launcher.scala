@@ -1,17 +1,26 @@
-import fr.esme.gdpr.services.{Service1, Service2, Service3}
+import fr.esme.gdpr.DataFrameReader
+import fr.esme.gdpr.configuration.{ConfigReader, JsonConfig}
+import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
-
+import org.apache.spark.sql.types.{DoubleType, IntegerType, LongType, StringType, StructField, StructType}
+import spray._
+import spray.json._
+import fr.esme.gdpr.configuration.JsonConfig._
+import fr.esme.gdpr.configuration.JsonConfigProtocol._
+import fr.esme.gdpr.utils.schemas.DataFrameSchema
 object Launcher {
   def main(args: Array[String]): Unit = {
     //Add Scopt command line
-    val serviceToLaunch = "s1"
+    Logger.getLogger("org").setLevel(Level.OFF)
 
-    val session = SparkSession.builder().master("local").getOrCreate()
-    val df = session.read.csv("inputPath")
-    serviceToLaunch match {
-      case "s1" => Service1.deleteLineWithId(df, "", "")
-      case "s2" => Service2.hashIdColumn(df, "", "", "")
-      case "s3" => Service3.getClientData(df, "", "", "")
-    }
+    implicit val session = SparkSession.builder().master("local").getOrCreate()
+
+    val confReader = ConfigReader.readConfig("conf/config.json")
+    val configuration = confReader.parseJson.convertTo[JsonConfig]
+    val dfSchema: StructType = DataFrameSchema.buildDataframeSchema(configuration.fields)
+    val data = DataFrameReader.readCsv("data.csv", configuration.csvOptions, dfSchema)
+    data.printSchema()
+    data.show
+
   }
 }
