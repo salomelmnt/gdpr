@@ -3,7 +3,8 @@
   "csvOptions": {
     "header": "false",
     "inferSchema": "false",
-    "delimiter": ";"
+    "delimiter": ";",
+
   },
   "fields":
   [
