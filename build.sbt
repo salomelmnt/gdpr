@@ -1,5 +1,5 @@
 
-name := "gdpr"
+name := "exam"
 
 version := "0.1"
 
